@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Återanvändbart Graviditetstest</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #555;
+            display: block;
+        }
+
+        select {
+            font-size: 1.1rem;
+            padding: 12px 25px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: 2px solid #ddd;
+            background-color: #f4f7fb;
+            color: #333;
+            width: 100%;
+        }
+
+        button {
+            font-size: 1.1rem;
+            padding: 12px 25px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+            background-size: 400%;
+            color: white;
+            transition: all 0.3s ease, background-position 1.5s ease-in-out;
+        }
+
+        button:hover {
+            background-position: 100%;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        #result.show {
+            opacity: 1;
+        }
+
+        .positive { background-color: #d4edda; color: #155724; }
+        .negative { background-color: #f8d7da; color: #721c24; }
+        .uncertain { background-color: #fff3cd; color: #856404; }
+        .twist { background-color: #e2d6f5; color: #4a007d; }
+
+        .loading {
+            width: 40px;
+            height: 40px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1.2s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Återanvändbart Graviditetstest</h1>
+
+        <label for="language">Välj språk:</label>
+        <select id="language">
+            <option value="svenska">Svenska</option>
+            <option value="english">English</option>
+        </select>
+
+        <button onclick="runTest()">Gör ett test</button>
+        <button onclick="exit()">Avsluta</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const results = {
+            svenska: {
+                positive: [
+                    "🎉 Grattis! Du väntar en enhörning! 🦄",
+                    "🚀 Resultatet är positivt... och bebisen är redan på väg till Mars!",
+                    "🐱 Du väntar en katt. Inte en mänsklig bebis, men en bebis ändå!",
+                    "🤖 En AI-bebis! Den började just hacka ditt Wi-Fi!",
+                    "🎭 Bebisen har redan anmält sig till en teaterkurs!",
+                    "🐢 Resultatet är positivt. Bebisen gillar att ta det lugnt, men kommer vara världens snabbaste när den växer!",
+                    "🦋 En bebis som älskar att flyga på magiska vingar!",
+                    "🦊 Grattis! Du väntar en vild liten räv!",
+                    "🎤 Bebisen har redan släppt sitt första album!",
+                    "🎮 Testet är positivt! Förbered dig på att ha en liten gamer i familjen!",
+                    "🐶 Grattis, du väntar en valp! Inte riktigt en bebis, men väldigt söt!",
+                    "🦁 Resultatet är positivt, men du kanske väntar en liten lejonkung?",
+                    "🦄 En enhörning kommer snart! Ja, precis, en riktigt magisk bebis!",
+                    "🎬 Bebisen har redan bestämt sig för att bli filmstjärna!",
+                    "🧩 Din bebis kommer att vara ett mysterium, men ett fantastiskt sådant!",
+                    "🍕 Resultatet är positivt... men vi misstänker att bebisen vill ha pizza!",
+                    "🧸 Du väntar en framtida nallebjörn!",
+                    "🍿 Bebisen har redan bestämt sig för att bli binge-watching-expert!",
+                    "💡 Resultatet är positivt. Bebisen kommer vara ett genifullt ljus!",
+                    "🎧 En framtida DJ är på väg!",
+                    "👽 Bebisen verkar vara en utomjording från framtiden!",
+                    "🎨 Bebisen har redan skapat sin första konstutställning!",
+                    "🍀 Du väntar en bebis som kommer bringa tur och framgång!",
+                    "🌮 Bebisen har redan beställt tacos till sin första födelsedag!",
+                    "🦐 Grattis, en liten skaldjursälskare är på väg!",
+                    "🎭 En framtida teaterlegend är på gång!",
+                    "🦇 Bebisen kommer vara den nattliga superstjärnan i familjen!",
+                    "🌟 En bebis som snart kommer att vara en stjärna i sitt eget TV-program!",
+                    "🐥 Du väntar på en liten kyckling!",
+                    "💀 Positivt! Bebisen har redan börjat fundera på sitt Halloween-kostym!",
+                    "🎤 Din bebis kommer att vara en framtida rockstjärna!",
+                    "🛸 Ett UFO! Din bebis kanske kommer från en annan planet!",
+                    "💃 Bebisen kommer snart vara en dansguru!",
+                    "🍦 Du väntar på en liten glassälskare!",
+                    "🐰 Bebisen kommer att hoppa in i ditt liv som en glad liten kanin!",
+                    "🎣 Testet är positivt! Bebisen kommer vara en expert på att fiska efter skratt!",
+                    "🚁 Resultatet är positivt! Förbered dig på att din bebis kommer att vara en riktig höjdare!",
+                    "🎪 Du väntar en framtida cirkusartist!"
+                ],
+                negative: [
+                    "❌ Testet är negativt, men du har vunnit ett gratis abonnemang på Netflix!",
+                    "🍕 Ingen bebis... men du är gravid med en enorm hunger!",
+                    "🎸 Negativt! Men du kanske väntar en osynlig rockstjärna?",
+                    "🐉 Ingen bebis denna gång, men ett ägg kläcktes nyss i ditt kök...",
+                    "🚲 Testet är negativt. Istället får du en osynlig enhörning att rida på!",
+                    "🦁 Ingen bebis här! Men kanske en framtida kung av savannen?",
+                    "🍀 Negativt, men kanske väntar du på en lycklig skatt!",
+                    "🦄 Ingen bebis, men du kanske väntar en magisk drake?",
+                    "🎤 Testet är negativt, men du kan alltid bli en stjärna på karaoke!",
+                    "🍟 Testet är negativt, men du kan alltid njuta av en stor pommes frites!",
+                    "🎁 Negativt, men kanske är det en julafton varje dag!",
+                    "🎩 Ingen bebis, men kanske en framtida trollkarl!",
+                    "🍿 Negativt, men en ny serie har just släppts och den är fantastisk!",
+                    "🚀 Testet är negativt, men du kanske väntar på att åka till Mars!",
+                    "🎧 Ingen bebis, men du kan vara en musikproducent i framtiden!",
+                    "🍎 Testet är negativt, men kanske är du gravid med en jättestor godisbutik!",
+                    "🚂 Ingen bebis, men du väntar på ett tåg med otroliga äventyr!",
+                    "🎉 Negativt, men du kan alltid vara stjärnan på nästa fest!",
+                    "🦖 Inget resultat, men vi har en dinosaurie som väntar på dig!",
+                    "🍄 Testet är negativt, men du väntar kanske på en magisk svamp!",
+                    "🧸 Negativt, men du har en nallebjörn att krama på!",
+                    "🍩 Ingen bebis, men kanske väntar en stor laddning med donuts?",
+                    "🚴‍♂️ Testet är negativt, men du är redo för att cykla mot nya äventyr!",
+                    "🎱 Ingen bebis, men en framtida biljardmästare kanske!",
+                    "🥇 Testet är negativt, men du kommer vara vinnaren i alla framtida tävlingar!",
+                    "🍪 Inget resultat, men du väntar på en stor rulle med chokladkakor!",
+                    "🎮 Testet är negativt, men du väntar på nästa stora e-sportturnering!",
+                    "🐒 Ingen bebis, men en framtida monkey king kanske?",
+                    "🍉 Testet är negativt, men du kan alltid äta massor av vattenmelon!",
+                    "🎨 Ingen bebis, men en fantastisk konstnär kommer framträda!",
+                    "🏰 Testet är negativt, men du kanske väntar på ditt eget slott!",
+                    "🎢 Negativt, men din livsstil kommer vara som en berg-och-dalbana!",
+                    "🐍 Inget resultat, men du kanske väntar på en supercool orm!"
+                ],
+                uncertain: [
+                    "🤔 Testet är osäkert. Kan vara en bebis, kan vara en pizzabeställning...",
+                    "🕵️‍♂️ Resultatet är dolt! Testet säger: 'Kom tillbaka senare, jag funderar.'",
+                    "👽 Oklart! Men något ovanligt sker – kanske en utomjordisk graviditet?",
+                    "⏳ Testet laddar... och laddar... och laddar... Kom tillbaka om 20 år!",
+                    "🧩 Testresultat: 42. Det är allt vi kan säga just nu!",
+                    "🌫️ Resultatet är i dimma... kanske en bebis, kanske en katt!",
+                    "🦄 Testet säger... det kan vara en enhörning, men vi är inte säkra!",
+                    "🛸 Resultatet är osäkert. Men det kan vara ett UFO som kommer!",
+                    "👽 Testet är så osäkert att det kanske är en utomjordisk bebis!",
+                    "⚡ Testet sänder konstiga signaler... kanske är du gravid med en superkraft!",
+                    "🎲 Testet är osäkert. Det är som att rulla en tärning!",
+                    "🔮 Testet är mystiskt, men stjärnorna säger att något är på väg!",
+                    "🔍 Testet är osäkert, kanske väntar du på en framtida detektiv!",
+                    "🛸 Resultatet är osäkert. Det kan vara en baby eller ett rymdskepp!",
+                    "📡 Signalerna är svaga, men vi får se snart!",
+                    "🎩 Testet är osäkert, men vi har en magisk känsla!",
+                    "🌈 Testet är som en regnbåge – osäkert men vackert!",
+                    "👑 Resultatet är osäkert. Kanske väntar du en prins eller prinsessa!",
+                    "🧙‍♂️ Testet säger... du kanske väntar på en framtida trollkarl!",
+                    "⏳ Testet säger att det är osäkert. Vänta lite längre!",
+                    "🎥 Testet är osäkert – din bebis kanske är en filmstjärna!",
+                    "🌍 Resultatet är osäkert, men något stort är på gång!",
+                    "🐉 Testet är osäkert – kanske en drake kommer att födas?",
+                    "🎡 Testet är osäkert, men du kanske får en karneval som resultat!",
+                    "🎮 Resultatet är osäkert, men du kanske väntar på en framtida e-sportstjärna!",
+                    "📚 Testet är osäkert, men vi har en framtida bokförfattare på gång!",
+                    "🎨 Testet är osäkert – men kanske väntar en framtida konstnär!",
+                    "🎠 Resultatet är osäkert, men du väntar kanske på en karusell av äventyr!",
+                    "🎯 Testet är osäkert. Men kanske du väntar på en mästare!",
+                    "🎀 Resultatet är osäkert – men vi tycker du är fantastisk!",
+                    "🏀 Testet är osäkert, men kanske väntar en framtida basketspelare!",
+                    "⚽ Testet är osäkert, men du kanske väntar på en kommande fotbollsstjärna!",
+                    "🧳 Resultatet är osäkert, men du kanske väntar på en spännande resa!"
+                ]
+            }
+        };
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function runTest() {
+            const lang = document.getElementById('language').value;
+            const category = Math.random() < 0.5 ? 'positive' : Math.random() < 0.8 ? 'negative' : 'uncertain';
+            const message = getRandom(results[lang][category]);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="loading"></div>';
+            resultDiv.className = "show";
+
+            setTimeout(() => {
+                resultDiv.innerHTML = message;
+                resultDiv.className = "show " + category;
+            }, 2000);
+        }
+
+        function exit() {
+            if (window.opener) {
+                window.close();
+            } else {
+                alert("För att avsluta, stäng fliken eller webbläsaren manuellt.");
+            }
+        }
+    </script>
+</body>
+</html>
